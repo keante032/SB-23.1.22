@@ -31,4 +31,4 @@ class User(db.Model):
     def full_name(self):
         """Return full name of user."""
 
-        return f"{self.first_name} {self.last_name}"
+        return f'{self.first_name} {self.last_name}'

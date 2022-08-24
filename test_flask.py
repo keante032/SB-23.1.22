@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app
-from models import db, Pet
+from models import db, User
 
 # Use test database and don't clutter tests with SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_test'
@@ -25,7 +25,7 @@ class BloglyViewsTestCase(TestCase):
 
         User.query.delete()
 
-        user = User(first_name="TestUser1", last_name="TestSurname1")
+        user = User(first_name='TestUser1', last_name='TestSurname1', image_url=None)
         db.session.add(user)
         db.session.commit()
 
@@ -33,7 +33,7 @@ class BloglyViewsTestCase(TestCase):
         self.user = user
 
     def tearDown(self):
-        """Clean up any fouled transaction."""
+        """Clean up any fouled transactions."""
 
         db.session.rollback()
 
@@ -52,19 +52,19 @@ class BloglyViewsTestCase(TestCase):
             self.assertIn(self.user.first_name, html)
             self.assertIn('<ul>', html)
 
-    def test_users_index(self):
+    def test_users_new_get(self):
         with app.test_client() as client:
-            response = client.get('/users')
+            response = client.get('/users/new')
             html = response.get_data(as_text=True)
 
             self.assertEqual(response.status_code, 200)
-            self.assertIn('<h1>Users</h1>', html)
-            self.assertIn('<ul>', html)
+            self.assertIn('<h1>Create a user</h1>', html)
 
-    def test_convert_submit(self):
+    def test_users_new_post(self):
         with app.test_client() as client:
-            response = client.post('/convert', follow_redirects=True, data={'convert-from': 'USD', 'amount': '1.0', 'convert-to': 'USD'})
+            d = {'first_name': 'TestUser2', 'last_name': 'TestSurname2', 'image_url': ''}
+            response = client.post('/users/new', data=d, follow_redirects=True)
             html = response.get_data(as_text=True)
 
             self.assertEqual(response.status_code, 200)
-            self.assertIn('$ 1.00 (USD) converts to $ 1.00 (USD).', html)
+            self.assertIn('TestUser2', html)
