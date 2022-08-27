@@ -99,3 +99,27 @@ def users_destroy(user_id):
     db.session.commit()
 
     return redirect("/users")
+
+
+@app.route('/users/<int:user_id>/posts/new')
+def users_edit(user_id):
+    """Show a form to add new post for an existing user"""
+
+    user = User.query.get_or_404(user_id)
+    return render_template('users/new_post.html', user=user)
+
+
+@app.route('/users/<int:user_id>/posts/new', methods=["POST"])
+def users_update(user_id):
+    """Handle form submission for user's new post"""
+
+    user = User.query.get_or_404(user_id)
+    new_post = Post(
+        title = request.form['title']
+        content = request.form['content']
+        author_id = user.id)
+
+    db.session.add(new_post)
+    db.session.commit()
+
+    return redirect("/users/<int:user_id>")
