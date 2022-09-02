@@ -24,8 +24,8 @@
   <div class="form-group row">
     {% for tag in tags %}
     <div>
-      <input type="checkbox" class="form-control" name="selected-tags" id="{{ tag.name }}" value="{{ tag.name }}" {% if
-        tag in post.tags %}checked{% endif %}>
+      <input type="checkbox" name="selected-tags" id="{{ tag.name }}" value="{{ tag.name }}" {% if tag in post.tags
+        %}checked{% endif %}>
       <label for="{{ tag.name }}">{{ tag.name }}</label>
     </div>
     {% endfor %}

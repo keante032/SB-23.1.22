@@ -46,6 +46,7 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.now())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    posts_tags = db.relationship('PostTag', backref='posts')
     tags = db.relationship('Tag', secondary='posts_tags', backref='posts')
 
 class Tag(db.Model):
@@ -55,6 +56,8 @@ class Tag(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False, unique=True)
+
+    posts_tags = db.relationship('PostTag', backref='tags')
 
 class PostTag(db.Model):
     """Post-tag relationships."""

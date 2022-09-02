@@ -116,7 +116,9 @@ def users_add_new_post(user_id):
         content = request.form['content'],
         author_id = user.id)
 
-    new_post.tags = request.form.getlist('selected-tags')
+    for chosen_tag in request.form.getlist('selected-tags'):
+        tag = Tag.query.filter_by(name=chosen_tag).first()
+        new_post.tags.append(tag)
     
     db.session.add(new_post)
     db.session.commit()
@@ -148,7 +150,15 @@ def posts_edit_submit(post_id):
     post = Post.query.get_or_404(post_id)
     post.title = request.form['title']
     post.content = request.form['content']
-    post.tags = request.form.getlist('selected-tags')
+
+    prev_tags = PostTag.query.filter(PostTag.post_id==post_id).all()
+    for prev_tag in prev_tags:
+        db.session.delete(prev_tag)
+    db.session.commit()
+
+    for chosen_tag in request.form.getlist('selected-tags'):
+        tag = Tag.query.filter_by(name=chosen_tag).first()
+        post.tags.append(tag)
 
     db.session.add(post)
     db.session.commit()
